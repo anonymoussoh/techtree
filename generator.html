@@ -1,0 +1,93 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="ja">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<script type="text/javascript">
+
+function encode(){
+var result = {};
+result['tech_ja'] = document.getElementById('tech_ja').value;
+result['tech_en'] = document.getElementById('tech_en').value;
+ if(document.getElementById('require').value){
+ result['require'] = document.getElementById('require').value.split(',');
+ }else{
+ result['require'] = [];
+ }
+ if(document.getElementById('mystery').value){
+ result['mystery'] = document.getElementById('mystery').value.split(',');
+ }else{
+ result['mystery'] = [];
+ }
+ if(document.getElementById('building').value){
+ result['building'] = document.getElementById('building').value.split(',');
+ }else{
+ result['building'] = [];
+ }
+ if(document.getElementById('unit').value){
+ result['unit'] = document.getElementById('unit').value.split(',');
+ }else{
+ result['unit'] = [];
+ }
+result['description'] = document.getElementById('description').value;
+
+document.getElementById('result').value = JSON.stringify(result);
+}
+function decode(){
+var rawdata = document.getElementById('result').value;
+rawdata.match(/.* = (.*);/);
+//console.log(RegExp.$1);
+var obj = JSON.parse(RegExp.$1);
+document.getElementById('tech_ja').value = obj['tech_ja'];
+document.getElementById('tech_en').value = obj['tech_en'];
+document.getElementById('description').value = obj['description'];
+ if(obj['require']){
+ document.getElementById('require').value = obj['require'].join(',');
+ }else{
+ document.getElementById('require').value = "";
+ }
+ if(obj['mystery']){
+ document.getElementById('mystery').value = obj['mystery'].join(',');
+ }else{
+ document.getElementById('mystery').value = "";
+ }
+ if(obj['building']){
+ document.getElementById('building').value = obj['building'].join(',');
+ }else{
+ document.getElementById('building').value = "";
+ }
+ if(obj['unit']){
+ document.getElementById('unit').value = obj['unit'].join(',');
+ }else{
+ document.getElementById('unit').value = "";
+ }
+
+}
+
+</script>
+
+<title>管理</title>
+
+</head>
+<body lang="ja">
+<form>
+<div>
+<div>日本語技術名：<input type='text' id='tech_ja'></div>
+<div>英語技術名：<input type='text' id='tech_en'></div>
+<div>必要技術：<input type='text' id='require' size='50'></div>
+<div>説明：<textarea id='description' rows='5' cols='50'></textarea></div>
+<div>不思議：<input type='text' id='mystery' size='50'></div>
+<div>解禁施設：<input type='text' id='building' size='50'></div>
+<div>解禁ユニット：<input type='text' id='unit' size='50'></div>
+</div>
+<div>
+<input type='button' value='エンコード' onclick='encode()'>｜
+<input type='button' value='デコード' onclick='decode()'>｜｜｜｜｜
+<input type='reset' value='全消去'>
+</div>
+<div>
+<textarea id='result' rows='10' cols='100'></textarea>
+</div>
+</form>
+
+</body>
+</html>

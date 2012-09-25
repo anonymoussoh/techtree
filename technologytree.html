@@ -1,0 +1,236 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="ja">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Script-Type" content="text/javascript" />
+<script src="raphael-min.js" type="text/javascript" charset="utf-8"></script> 
+
+<title>Technology Tree</title>
+<style type="text/css">
+<!--
+ #tech_tree{
+ width:80%;
+ height:30%;
+ overflow:scroll;
+ background-color:#FFEEBB;
+ }
+-->
+</style>
+
+</head>
+<body lang="ja">
+<h1>Technology Tree</h1>
+ <div id='tech_tree'></div>
+<script type="text/javascript">
+var paper = Raphael("tech_tree",3000,400);
+
+function box(n,x,y){
+       this.width  = 120;
+       this.height = 20;
+       this.x = x;
+       this.y = y;
+       this.tech  = n;
+       }
+box.prototype.render = function(){
+       var tech_frame = {}; var tech_name = {};
+       tech_frame[this.tech.tech_en] = paper.rect(this.x,this.y,this.width,this.height);
+       tech_name[this.tech.tech_en]  = paper.text((this.width/2+this.x),(this.height/2+this.y),this.tech.tech_ja);
+       tech_frame[this.tech.tech_en].attr({"stroke":"black","fill":"#DDBB88"});
+       tech_name[this.tech.tech_en].attr({"font-size":"15px"});
+       tech_frame[this.tech.tech_en].id = this.tech.tech_en;
+       tech_frame[this.tech.tech_en].data("startx",this.width+this.x);
+       tech_frame[this.tech.tech_en].data("starty",this.height+this.y-10);
+       tech_frame[this.tech.tech_en].data("require",this.tech.require);
+//       tech_frame[this.tech.tech_en].data("name_ja",this.tech.tech_ja);
+       tech_name[this.tech.tech_en].data("part","name");
+       tech_frame[this.tech.tech_en].data("part","frame");
+
+       var count_click = 0;
+       var target = this.tech.tech_en;
+       var require = this.tech.require;
+       var description = this.tech.description;
+       var steps = [];
+       var mystery = this.tech.mystery;
+       var unit = this.tech.unit;
+       var building = this.tech.building;
+       
+        for(var p=0;p<require.length;p++){
+        var require_elem = paper.getById(require[p]);
+        var startx = require_elem.data("startx");
+        var starty = require_elem.data("starty");
+        var line = paper.path("M"+startx+","+starty+"L"+this.x+","+(this.height/2+this.y));
+        line.toBack();
+        line.id = this.tech.tech_en+"-"+require[p];
+        line.data("part","line");
+        }
+       
+       var click_event = function(){
+       paper.forEach(function(el){
+        var require = el.data("part");
+        if(require==="frame"){
+        el.attr({"fill":"#DDBB88"});
+        }
+        if(require==="line"){
+        el.attr({"stroke":"black","stroke-width":"1px"});
+//        el.toBack();はほかのと干渉して死ねる toFront();も同じ
+        }
+       });
+       
+       var fill = {"fill":"yellow"};
+       var stroke = {"stroke":"yellow","stroke-width":"2px"};
+        if(count_click%2 === 1){
+        fill = {"fill":"#DDBB88"};
+        stroke = {"stroke":"black","stroke-width":"1px"};
+        }
+        tech_frame[target].attr(fill);
+        
+        function hoge(require,target){
+        var ancestor = [];
+         for(var i=0;i<require.length;i++){
+          if(steps.indexOf(require[i])===-1){
+          steps.push(require[i]);
+          }
+         
+         var upper_elem = paper.getById(require[i]);
+         upper_elem.attr(fill);
+          var connection_line = paper.getById(target+"-"+require[i]);
+          connection_line.attr(stroke);
+           if(count_click%2 === 1){
+           connection_line.toBack();
+           }else{
+           connection_line.toFront();
+           }
+         
+         ancestor = upper_elem.data("require");
+         hoge(ancestor,require[i]);
+         }
+        }
+        hoge(require,target);
+        
+       if(count_click%2 === 1){
+       document.getElementById("steps").value = "";
+       document.getElementById("building").value = "";
+       document.getElementById("description").value = "";
+       document.getElementById("unit").value = "";
+       document.getElementById("mystery").value = "";
+       }else{
+       document.getElementById("steps").value = steps.length;
+       document.getElementById("building").value = building;
+       document.getElementById("description").value = description;
+       document.getElementById("unit").value = unit;
+       document.getElementById("mystery").value = mystery;
+       }
+       
+       count_click = count_click+1;
+       };
+    tech_frame[this.tech.tech_en].click(click_event);
+    tech_name[this.tech.tech_en].click(click_event);
+};
+
+
+
+
+var firstlevel = [];
+firstlevel[0] = {"tech_ja":"兵法","tech_en":"warriorcode","description":"","require":[],"mystery":[],"building":[],"unit":["弓兵"]}
+firstlevel[1] = {"tech_ja":"青銅器","tech_en":"bronzeworking","description":"","require":[],"mystery":["ロードス島の巨像"],"building":[],"unit":["ファランクス"]};
+firstlevel[2] = {"tech_ja":"アルファベット","tech_en":"alphabet","require":[],"description":"","mystery":[],"building":[],"unit":[]};
+firstlevel[3] = {"tech_ja":"葬儀","tech_en":"ceremonialburial","require":[],"description":"","mystery":[],"building":["寺院"],"unit":[]};
+firstlevel[4] = {"tech_ja":"建築","tech_en":"masonry","require":[],"description":"","mystery":["万里の長城","ピラミッド"],"building":["城壁","宮殿"],"unit":[]};
+firstlevel[5] = {"tech_ja":"騎乗","tech_en":"horsebackriding","description":"","require":[],"mystery":[],"building":[],"unit":["騎馬兵"]};
+firstlevel[6] = {"tech_ja":"陶芸","tech_en":"pottery","require":[],"description":"","mystery":["空中庭園"],"building":["穀物庫"],"unit":["労働者"]};
+
+for(var n=0;n<firstlevel.length;n++){
+ var each = new box(firstlevel[n],10,20+14*n*4);
+ each.render();
+}
+
+var secondlevel = [];
+secondlevel[0] = {"tech_ja":"鉄器","tech_en":"ironworking","require":["bronzeworking","warriorcode"],"mystery":[],"building":[],"unit":["レギオン"],"description":""};
+secondlevel[1] = {"tech_ja":"筆記","tech_en":"writing","require":["alphabet"],"mystery":[],"building":["図書館"],"unit":["外交官"],"description":""};
+secondlevel[2] = {"tech_ja":"法律","tech_en":"codeoflaws","require":["alphabet"],"mystery":[],"building":["裁判所"],"unit":[],"description":""};
+secondlevel[3] = {"tech_ja":"貨幣","tech_en":"currency","require":["bronzeworking"],"mystery":[],"building":["市場"],"unit":[],"description":""};
+secondlevel[4] = {"tech_ja":"神秘主義","tech_en":"mysticism","require":["ceremonialburial"],"mystery":["アポローン神殿"],"building":[],"unit":[],"description":""};
+secondlevel[5] = {"tech_ja":"数学","tech_en":"mathematics","require":["alphabet","masonry"],"mystery":[],"building":[],"unit":["カタパルト"],"description":""};
+secondlevel[6] = {"tech_ja":"地図","tech_en":"mapmaking","require":["alphabet"],"mystery":["ファロス灯台"],"building":[],"unit":["トライリーム"],"description":""};
+secondlevel[7] = {"tech_ja":"車輪","tech_en":"wheel","require":["horsebackriding"],"mystery":[],"building":[],"unit":["チャリオット"],"description":""};
+secondlevel[8] = {"tech_ja":"多神教","tech_en":"polytheism","require":["ceremonialburial","horsebackriding"],"mystery":[],"building":[],"unit":[],"description":""};
+
+for(var n=0;n<secondlevel.length;n++){
+ var each = new box(secondlevel[n],200,20+14*n*3);
+ each.render();
+}
+
+var thirdlevel = [];
+thirdlevel[0] = {"tech_ja":"読み書き","tech_en":"literacy","require":["codeoflaws","writing"],"mystery":["アレクサンドリア図書館"],"building":[],"unit":[],"description":"「アレクサンドリア図書館」は二か国以上が獲得した技術を１ターンにつき１つ獲得できる不思議。\n極めて強力な効果であり、オンライン対戦では禁止されることもある。これを建設する競争や所在都市を奪う戦争が起こる。"};
+thirdlevel[1] = {"tech_ja":"交易","tech_en":"trade","require":["codeoflaws","currency"],"mystery":["マルコポーロの大使館"],"building":[],"unit":["キャラバン"],"description":""};
+thirdlevel[2] = {"tech_ja":"君主制","tech_en":"monarchy","require":["codeoflaws","ceremonialburial"],"mystery":[],"building":[],"unit":[],"description":"政治体制の「君主制」が使えるようになる。"};
+thirdlevel[3] = {"tech_ja":"建設","tech_en":"construction","require":["masonry","currency"],"mystery":[],"building":["水道","コロシアム"],"unit":[],"description":""};
+thirdlevel[4] = {"tech_ja":"天文学","tech_en":"astronomy","require":["mysticism","mathematics"],"mystery":["コペルニクスの天文台"],"building":[],"unit":[],"description":""};
+thirdlevel[5] = {"tech_ja":"航海","tech_en":"seafaring","require":["mapmaking","pottery"],"mystery":[],"building":["港"],"unit":["探検家"],"description":""};
+for(var n=0;n<thirdlevel.length;n++){
+ var each = new box(thirdlevel[n],400,30+16*n*4);
+ each.render();
+}
+
+var forthlevel = [];
+forthlevel[0] = {"tech_ja":"共和制","tech_en":"republic","require":["codeoflaws","literacy"],"mystery":[],"building":[],"unit":[],"description":"政治体制で「共和制」が選択できるようになる。"};
+forthlevel[1] = {"tech_ja":"哲学","tech_en":"philosophy","require":["literacy","mysticism"],"mystery":[],"building":[],"unit":[],"description":"これを誰よりも早く取得すると１つ技術がもらえる。通称「哲学ジャンプ」。"};
+forthlevel[2] = {"tech_ja":"橋梁建設","tech_en":"bridgebuilding","require":["construction","ironworking"],"mystery":[],"building":[],"unit":[],"description":"川があるタイルに道を敷くことができるようになる。"};
+forthlevel[3] = {"tech_ja":"封建制度","tech_en":"feudalism","require":["warriorcode","monarchy"],"mystery":["孫子の兵法学校"],"building":[],"unit":["長槍兵"],"description":"「長槍兵」と「孫子の兵法学校」はAIが好んでいる…"};
+forthlevel[4] = {"tech_ja":"工学","tech_en":"engineering","require":["construction","wheel"],"mystery":["リチャード一世の十字軍遠征"],"building":[],"unit":[],"description":"「リチャード一世の十字軍遠征」はこれを建造した都市とその周辺のタイル合計９タイルの生産を１上げる効果を持つ。"};
+forthlevel[5] = {"tech_ja":"航海術","tech_en":"navigation","require":["astronomy","seafaring"],"mystery":["マゼランの探検航海"],"building":[],"unit":["キャラベル船"],"description":"「キャラベル船」は「トライリーム」を旧式化する。"};
+for(var n=0;n<forthlevel.length;n++){
+ var each = new box(forthlevel[n],600,30+16*n*4);
+ each.render();
+}
+
+var fifthlevel = [];
+fifthlevel[0] = {"tech_ja":"銀行制度","tech_en":"banking","require":["trade","republic"],"mystery":[],"building":["銀行"],"unit":[],"description":"「銀行」はすでに「市場」がある都市で建設が可能。"};
+fifthlevel[1] = {"tech_ja":"発明","tech_en":"invention","require":["engineering","literacy"],"mystery":["レオナルド・ダ・ヴィンチの工房"],"building":[],"unit":[],"description":"「レオナルド・ダ・ヴィンチの工房」は毎ターンランダムに、上位互換となるユニットにアップグレードできるユニットの１つを無償でアップグレードする不思議。"};
+fifthlevel[2] = {"tech_ja":"物理学","tech_en":"physics","require":["navigation","literacy"],"mystery":[],"building":[],"unit":[],"description":""};
+fifthlevel[3] = {"tech_ja":"医学","tech_en":"medicine","require":["philosophy","trade"],"mystery":["シェイクスピアの劇場"],"building":[],"unit":[],"description":"技術と不思議の関連性は不明。"};
+fifthlevel[4] = {"tech_ja":"大学","tech_en":"university","require":["philosophy","mathematics"],"mystery":[],"building":["大学"],"unit":[],"description":"「大学」はすでに「図書館」がある都市で建設が可能。"};
+fifthlevel[5] = {"tech_ja":"騎士道","tech_en":"chivalry","require":["feudalism","horsebackriding"],"mystery":[],"building":[],"unit":["騎士"],"description":""};
+fifthlevel[6] = {"tech_ja":"一神教","tech_en":"monotheism","require":["philosophy","polytheism"],"mystery":["ミケランジェロの教会"],"building":["大聖堂"],"unit":[],"description":""};
+for(var n=0;n<fifthlevel.length;n++){
+ var each = new box(fifthlevel[n],800,30+19*n*3);
+ each.render();
+}
+
+var sixthlevel = [];
+sixthlevel[0] = {"tech_ja":"民主主義","tech_en":"democracy","require":["banking"],"mystery":["自由の女神像"],"building":[],"unit":[],"description":"政治体制で「民主主義」を選べるようになる。「自由の女神像」は政治体制を無政府状態に陥ることなく即座に変えることができる不思議。"};
+sixthlevel[1] = {"tech_ja":"経済","tech_en":"economics","require":["banking","university"],"mystery":["アダム・スミスの貿易会社"],"building":["証券取引所"],"unit":[],"description":"「証券取引所」は「銀行」がすでにある都市で建設が可能。"};
+sixthlevel[2] = {"tech_ja":"磁気学","tech_en":"magnetism","require":["physics","ironworking"],"mystery":[],"building":[],"unit":["ガレオン船","フリゲート"],"description":"「ガレオン船」は「キャラベル船」を旧式化する。注意したいのは「キャラベル船」は攻撃ができるが「ガレオン船」は輸送のみであるという点。「キャラベル船」から「フリゲート」にはアップグレードできない。"};
+sixthlevel[3] = {"tech_ja":"火薬","tech_en":"gunpowder","require":["invention","ironworking"],"mystery":[],"building":["兵舎（改良）","沿岸防衛"],"unit":["マスケット兵"],"description":"Civilization4ではやたらと不憫な扱いをされているマスケット兵だがCiv2/3がベースのFreecivでは主役を張れるユニットである。これの研究が終わると既存の「兵舎」は消滅するためこれで手に入る「兵舎（改良）」を建設する必要がある。「沿岸防衛」は海沿いの都市で船舶ユニットに対する防御力を上げる。余談だか「兵舎」の消滅は内部的には売却と同じ扱いらしく、サウンドがオンだと売却時の音が鳴って大変驚かされるとか。"};
+sixthlevel[4] = {"tech_ja":"蒸気機関","tech_en":"steamengine","require":["invention","physics"],"mystery":["エッフェル塔"],"building":[],"unit":["装甲艦"],"description":"「火薬」や「磁気学」と同じ列に配されているが研究ステップは「火薬」より７、「磁気学」より４高い上、「装甲艦」は「フリゲート」と性能がさして変わらないため重要性は低い。\n「エッフェル塔」はとくに効果がない不思議。せいぜいスコアを５上げるぐらいしかなく存在意義は不明。"};
+sixthlevel[5] = {"tech_ja":"化学","tech_en":"chemistry","require":["medicine","university"],"mystery":[],"building":[],"unit":[],"description":""};
+sixthlevel[6] = {"tech_ja":"公衆衛生","tech_en":"sanitation","require":["medicine","engineering"],"mystery":[],"building":["下水道"],"unit":[],"description":"「下水道」はすでに「水道」のある都市に建設が可能。人口を１２より上に伸ばせるようになる。"};
+sixthlevel[7] = {"tech_ja":"万有引力の法則","tech_en":"theoryofgravity","require":["university","astronomy"],"mystery":["ニュートンの学士院"],"building":[],"unit":[],"description":"「ニュートンの学士院」は大学の効果を大幅に増やす不思議。"};
+sixthlevel[8] = {"tech_ja":"神学","tech_en":"theology","require":["feudalism","monotheism"],"mystery":["J.S.バッハの大聖堂"],"building":[],"unit":[],"description":""};
+
+for(var n=0;n<sixthlevel.length;n++){
+ var each = new box(sixthlevel[n],1000,30+14*n*3);
+ each.render();
+}
+
+var seventhlevel = [];
+seventhlevel[0] = {"tech_ja":"爆薬","tech_en":"exprosives","require":["gunpowder"],"mystery":[],"building":[],"unit":["エンジニア"],"description":"「エンジニア」は「労働者」の上位互換ユニット。「労働者」ではできない「草原の丘化」や「湿地の海化（運河建設）」、「海の湿地化（埋め立て）」などを行うことができる強力なユニットである。"};
+seventhlevel[1] = {"tech_ja":"鉄道","tech_en":"railroad","require":["steamengine","bridgebuilding"],"mystery":["ダーウィンの航海"],"building":[],"unit":[],"description":"重要な技術。タイルにひかれた「道」を「鉄道」に変えることができるようになる。\nどのような遠方でも鉄道が引かれていればコストなしに移動ができる。"};
+seventhlevel[2] = {"tech_ja":"冶金","tech_en":"metallurgy","require":["gunpowder","university"],"mystery":[],"building":[],"unit":["カノン砲"],"description":"「カノン砲」は「カタパルト」の上位互換ユニットである。"};
+seventhlevel[3] = {"tech_ja":"指揮","tech_en":"leadership","require":["gunpowder","chivalry"],"mystery":[],"building":[],"unit":["竜騎兵"],"description":""};
+seventhlevel[4] = {"tech_ja":"原子理論","tech_en":"atomictheory","require":["theoryofgravity","physics"],"mystery":[],"building":[],"unit":[],"description":""};
+
+for(var n=0;n<seventhlevel.length;n++){
+ var each = new box(seventhlevel[n],1200,80+18*n*3);
+ each.render();
+}
+
+</script>
+<div>不思議：<input type id='mystery' size='25'>｜
+解禁ユニット：<input type='text' id='unit' size='25'>｜
+解禁建造物：<input type='text' id='building' size='25'>｜
+研究ステップ数：<input type='text' id='steps' size='5'></div>
+<div>説明：<textarea id='description' cols='100' rows='5'></textarea></div>
+<!--<div><textarea id='require'></textarea></div>-->
+</body>
+</html>
