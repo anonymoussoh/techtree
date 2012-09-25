@@ -22,7 +22,7 @@
 <h1>Technology Tree</h1>
  <div id='tech_tree'></div>
 <script type="text/javascript">
-var paper = Raphael("tech_tree",3000,400);
+var paper = Raphael("tech_tree",3600,400);
 
 function box(n,x,y){
        this.width  = 120;
@@ -56,6 +56,7 @@ box.prototype.render = function(){
        
         for(var p=0;p<require.length;p++){
         var require_elem = paper.getById(require[p]);
+//        console.log(require_elem.getBBox());
         var startx = require_elem.data("startx");
         var starty = require_elem.data("starty");
         var line = paper.path("M"+startx+","+starty+"L"+this.x+","+(this.height/2+this.y));
@@ -76,8 +77,8 @@ box.prototype.render = function(){
         }
        });
        
-       var fill = {"fill":"yellow"};
-       var stroke = {"stroke":"yellow","stroke-width":"2px"};
+       var fill = {"fill":"#44AAFF"};
+       var stroke = {"stroke":"#0022FF","stroke-width":"2px"};
         if(count_click%2 === 1){
         fill = {"fill":"#DDBB88"};
         stroke = {"stroke":"black","stroke-width":"1px"};
@@ -128,7 +129,8 @@ box.prototype.render = function(){
 };
 
 
-
+var x_placing = 200;
+var x_placing_count = 1;
 
 var firstlevel = [];
 firstlevel[0] = {"tech_ja":"兵法","tech_en":"warriorcode","description":"","require":[],"mystery":[],"building":[],"unit":["弓兵"]}
@@ -156,9 +158,10 @@ secondlevel[7] = {"tech_ja":"車輪","tech_en":"wheel","require":["horsebackridi
 secondlevel[8] = {"tech_ja":"多神教","tech_en":"polytheism","require":["ceremonialburial","horsebackriding"],"mystery":[],"building":[],"unit":[],"description":""};
 
 for(var n=0;n<secondlevel.length;n++){
- var each = new box(secondlevel[n],200,20+14*n*3);
+ var each = new box(secondlevel[n],x_placing*x_placing_count,22+14*n*3);
  each.render();
 }
+x_placing_count++;
 
 var thirdlevel = [];
 thirdlevel[0] = {"tech_ja":"読み書き","tech_en":"literacy","require":["codeoflaws","writing"],"mystery":["アレクサンドリア図書館"],"building":[],"unit":[],"description":"「アレクサンドリア図書館」は二か国以上が獲得した技術を１ターンにつき１つ獲得できる不思議。\n極めて強力な効果であり、オンライン対戦では禁止されることもある。これを建設する競争や所在都市を奪う戦争が起こる。"};
@@ -168,9 +171,10 @@ thirdlevel[3] = {"tech_ja":"建設","tech_en":"construction","require":["masonry
 thirdlevel[4] = {"tech_ja":"天文学","tech_en":"astronomy","require":["mysticism","mathematics"],"mystery":["コペルニクスの天文台"],"building":[],"unit":[],"description":""};
 thirdlevel[5] = {"tech_ja":"航海","tech_en":"seafaring","require":["mapmaking","pottery"],"mystery":[],"building":["港"],"unit":["探検家"],"description":""};
 for(var n=0;n<thirdlevel.length;n++){
- var each = new box(thirdlevel[n],400,30+16*n*4);
+ var each = new box(thirdlevel[n],x_placing*x_placing_count,30+16*n*4);
  each.render();
 }
+x_placing_count++;
 
 var forthlevel = [];
 forthlevel[0] = {"tech_ja":"共和制","tech_en":"republic","require":["codeoflaws","literacy"],"mystery":[],"building":[],"unit":[],"description":"政治体制で「共和制」が選択できるようになる。"};
@@ -180,9 +184,10 @@ forthlevel[3] = {"tech_ja":"封建制度","tech_en":"feudalism","require":["warr
 forthlevel[4] = {"tech_ja":"工学","tech_en":"engineering","require":["construction","wheel"],"mystery":["リチャード一世の十字軍遠征"],"building":[],"unit":[],"description":"「リチャード一世の十字軍遠征」はこれを建造した都市とその周辺のタイル合計９タイルの生産を１上げる効果を持つ。"};
 forthlevel[5] = {"tech_ja":"航海術","tech_en":"navigation","require":["astronomy","seafaring"],"mystery":["マゼランの探検航海"],"building":[],"unit":["キャラベル船"],"description":"「キャラベル船」は「トライリーム」を旧式化する。"};
 for(var n=0;n<forthlevel.length;n++){
- var each = new box(forthlevel[n],600,30+16*n*4);
+ var each = new box(forthlevel[n],x_placing*x_placing_count,30+16*n*4);
  each.render();
 }
+x_placing_count++;
 
 var fifthlevel = [];
 fifthlevel[0] = {"tech_ja":"銀行制度","tech_en":"banking","require":["trade","republic"],"mystery":[],"building":["銀行"],"unit":[],"description":"「銀行」はすでに「市場」がある都市で建設が可能。"};
@@ -193,9 +198,10 @@ fifthlevel[4] = {"tech_ja":"大学","tech_en":"university","require":["philosoph
 fifthlevel[5] = {"tech_ja":"騎士道","tech_en":"chivalry","require":["feudalism","horsebackriding"],"mystery":[],"building":[],"unit":["騎士"],"description":""};
 fifthlevel[6] = {"tech_ja":"一神教","tech_en":"monotheism","require":["philosophy","polytheism"],"mystery":["ミケランジェロの教会"],"building":["大聖堂"],"unit":[],"description":""};
 for(var n=0;n<fifthlevel.length;n++){
- var each = new box(fifthlevel[n],800,30+19*n*3);
+ var each = new box(fifthlevel[n],x_placing*x_placing_count,22+19*n*3);
  each.render();
 }
+x_placing_count++;
 
 var sixthlevel = [];
 sixthlevel[0] = {"tech_ja":"民主主義","tech_en":"democracy","require":["banking"],"mystery":["自由の女神像"],"building":[],"unit":[],"description":"政治体制で「民主主義」を選べるようになる。「自由の女神像」は政治体制を無政府状態に陥ることなく即座に変えることができる不思議。"};
@@ -209,21 +215,149 @@ sixthlevel[7] = {"tech_ja":"万有引力の法則","tech_en":"theoryofgravity","
 sixthlevel[8] = {"tech_ja":"神学","tech_en":"theology","require":["feudalism","monotheism"],"mystery":["J.S.バッハの大聖堂"],"building":[],"unit":[],"description":""};
 
 for(var n=0;n<sixthlevel.length;n++){
- var each = new box(sixthlevel[n],1000,30+14*n*3);
+ var each = new box(sixthlevel[n],x_placing*x_placing_count,22+14*n*3);
  each.render();
 }
+x_placing_count++;
 
 var seventhlevel = [];
-seventhlevel[0] = {"tech_ja":"爆薬","tech_en":"exprosives","require":["gunpowder"],"mystery":[],"building":[],"unit":["エンジニア"],"description":"「エンジニア」は「労働者」の上位互換ユニット。「労働者」ではできない「草原の丘化」や「湿地の海化（運河建設）」、「海の湿地化（埋め立て）」などを行うことができる強力なユニットである。"};
+seventhlevel[0] = {"tech_ja":"爆薬","tech_en":"explosives","require":["gunpowder"],"mystery":[],"building":[],"unit":["エンジニア"],"description":"「エンジニア」は「労働者」の上位互換ユニット。「労働者」ではできない「草原の丘化」や「湿地の海化（運河建設）」、「海の湿地化（埋め立て）」などを行うことができる強力なユニットである。"};
 seventhlevel[1] = {"tech_ja":"鉄道","tech_en":"railroad","require":["steamengine","bridgebuilding"],"mystery":["ダーウィンの航海"],"building":[],"unit":[],"description":"重要な技術。タイルにひかれた「道」を「鉄道」に変えることができるようになる。\nどのような遠方でも鉄道が引かれていればコストなしに移動ができる。"};
 seventhlevel[2] = {"tech_ja":"冶金","tech_en":"metallurgy","require":["gunpowder","university"],"mystery":[],"building":[],"unit":["カノン砲"],"description":"「カノン砲」は「カタパルト」の上位互換ユニットである。"};
 seventhlevel[3] = {"tech_ja":"指揮","tech_en":"leadership","require":["gunpowder","chivalry"],"mystery":[],"building":[],"unit":["竜騎兵"],"description":""};
 seventhlevel[4] = {"tech_ja":"原子理論","tech_en":"atomictheory","require":["theoryofgravity","physics"],"mystery":[],"building":[],"unit":[],"description":""};
 
 for(var n=0;n<seventhlevel.length;n++){
- var each = new box(seventhlevel[n],1200,80+18*n*3);
+ var each = new box(seventhlevel[n],x_placing*x_placing_count,80+18*n*3);
  each.render();
 }
+x_placing_count++;
+
+var eighthlevel = [];
+eighthlevel[0] = {"tech_ja":"産業化","tech_en":"industrialization","require":["railroad","banking"],"mystery":["婦人参政権"],"building":["工場"],"unit":["輸送船"],"description":"「輸送船」は「ガレオン船」を旧式化する。"};
+eighthlevel[1] = {"tech_ja":"電気学","tech_en":"electricity","require":["metallurgy","magnetism"],"mystery":[],"building":[],"unit":["駆逐艦"],"description":"「駆逐艦」は「フリゲート」を旧式化する。"};
+eighthlevel[2] = {"tech_ja":"徴兵制","tech_en":"conscription","require":["metallurgy","democracy"],"mystery":[],"building":[],"unit":["ライフル兵"],"description":"「ライフル兵」は「マスケット兵」を旧式化する。"};
+
+for(var n=0;n<eighthlevel.length;n++){
+ var each = new box(eighthlevel[n],x_placing*x_placing_count,50+25*n*4);
+ each.render();
+}
+x_placing_count++;
+
+var ninthlevel = [];
+ninthlevel[0] = {"tech_ja":"株式会社","tech_en":"corporation","require":["industrialization","economics"],"mystery":[],"building":[],"unit":["貨物輸送車"],"description":"「貨物輸送車」は「キャラバン」を旧式化する。"};
+ninthlevel[1] = {"tech_ja":"鋼鉄","tech_en":"steel","require":["industrialization","electricity"],"mystery":[],"building":[],"unit":["巡洋艦"],"description":"「巡洋艦」は「駆逐艦」の上位互換ユニット…ではない。別個の系統なので「駆逐艦」を旧式化しないし「駆逐艦」から「巡洋艦」にアップグレードすることはできない。"};
+ninthlevel[2] = {"tech_ja":"共産主義","tech_en":"communism","require":["philosophy","industrialization"],"mystery":["国際連合"],"building":["警察署"],"unit":[],"description":"政治体制で「共産主義」を選択できるようになる。市民幸せですか？\n「国際連合」は毎ターンユニットの体力を２回復する不思議。Freecivに外交勝利はない。"};
+ninthlevel[3] = {"tech_ja":"冷凍","tech_en":"refrigeration","require":["sanitation","electricity"],"mystery":[],"building":["スーパーマーケット"],"unit":[],"description":"地形改善の灌漑を農場に変えることができる。\nここより先に伸びる研究系統もなく、不思議もないため、実際にはろくに研究もされない。"};
+ninthlevel[4] = {"tech_ja":"戦術","tech_en":"tactics","require":["leadership","conscription"],"mystery":[],"building":[],"unit":["高山部隊","騎兵隊"],"description":"「竜騎兵」と「ライフル兵」の研究からの発展だが、これを獲得しても両方ともに旧式化はしない。\n「高山部隊」は地形無視で３マス進める。"};
+
+for(var n=0;n<ninthlevel.length;n++){
+ var each = new box(ninthlevel[n],x_placing*x_placing_count,80+18*n*3);
+ each.render();
+}
+x_placing_count++;
+
+var tenthlevel = [];
+tenthlevel[0] = {"tech_ja":"遺伝子工学","tech_en":"geneticengineering","require":["corporation","medicine"],"mystery":["癌の治療"],"building":[],"unit":[],"description":""};
+tenthlevel[1] = {"tech_ja":"偵察","tech_en":"espionage","require":["communism","democracy"],"mystery":[],"building":[],"unit":["スパイ"],"description":"「スパイ」は「外交官」を旧式化する。"};
+tenthlevel[2] = {"tech_ja":"電子工学","tech_en":"electronics","require":["corporation","electricity"],"mystery":["フーバーダム"],"building":["水力発電所"],"unit":[],"description":""};
+tenthlevel[3] = {"tech_ja":"工作機械","tech_en":"machinetools","require":["tactics","steel"],"mystery":[],"building":[],"unit":["大砲"],"description":""};
+tenthlevel[4] = {"tech_ja":"石油精製","tech_en":"refining","require":["corporation","chemistry"],"mystery":[],"building":["火力発電所"],"unit":[],"description":""};
+tenthlevel[5] = {"tech_ja":"ゲリラ戦","tech_en":"guerillawarfare","require":["tactics","communism"],"mystery":[],"building":[],"unit":["パルチザン"],"description":""};
+tenthlevel[6] = {"tech_ja":"上陸戦","tech_en":"amphibiouswarfare","require":["tactics","navigation"],"mystery":[],"building":["港湾施設"],"unit":["海兵隊"],"description":"「港湾施設」は船舶ユニットにとっての兵舎です。\n「海兵隊」は船から直接都市に上陸できるユニットです。飛行機による攻撃の後に使われます。"};
+
+for(var n=0;n<tenthlevel.length;n++){
+ var each = new box(tenthlevel[n],x_placing*x_placing_count,30+18*n*3);
+ each.render();
+}
+x_placing_count++;
+
+var eleventhlevel = [];
+eleventhlevel[0] = {"tech_ja":"小型化","tech_en":"miniaturization","require":["electronics","machinetools"],"mystery":[],"building":["海上プラットフォーム"],"unit":[],"description":"重要な技術。「海上プラットフォーム」は沿岸都市に作成できる施設で、海・浅瀬タイル１つにつき生産ポイントを１つ付与します。\nどのような小島でも劇的な生産力の向上が望めます。"};
+eleventhlevel[1] = {"tech_ja":"内燃機関","tech_en":"combustion","require":["explosives","refining"],"mystery":[],"building":[],"unit":["潜水艦"],"description":"「潜水艦」は対人戦では相手には攻撃されるまでその存在が確認できないユニットです。"};
+
+for(var n=0;n<eleventhlevel.length;n++){
+ var each = new box(eleventhlevel[n],x_placing*x_placing_count,100+25*n*5);
+ each.render();
+}
+x_placing_count++;
+
+var twelvethlevel = [];
+twelvethlevel[0] = {"tech_ja":"自動車","tech_en":"automobile","require":["steel","combustion"],"mystery":[],"building":["高速道路"],"unit":["戦艦"],"description":""};
+twelvethlevel[1] = {"tech_ja":"飛行術","tech_en":"flight","require":["theoryofgravity","combustion"],"mystery":[],"building":[],"unit":["戦闘機"],"description":""};
+
+for(var n=0;n<twelvethlevel.length;n++){
+ var each = new box(twelvethlevel[n],x_placing*x_placing_count,200+25*n*3);
+ each.render();
+}
+x_placing_count++;
+
+var thirteenthlevel = [];
+thirteenthlevel[0] = {"tech_ja":"大量生産","tech_en":"massproduction","require":["automobile","corporation"],"mystery":[],"building":["公共交通機関"],"unit":[],"description":""};
+thirteenthlevel[1] = {"tech_ja":"無線","tech_en":"radio","require":["flight","electricity"],"mystery":[],"building":["空港"],"unit":[],"description":"「空港」は飛行ユニットにとっての兵舎。"};
+thirteenthlevel[2] = {"tech_ja":"機動戦","tech_en":"mobilewarfare","require":["tactics","automobile"],"mystery":[],"building":["兵舎（新改良）"],"unit":["機甲部隊"],"description":"「火薬」と同じように獲得した瞬間に兵舎（改良）は破棄されるので兵舎（新改良）を立てる必要がある。"};
+
+for(var n=0;n<thirteenthlevel.length;n++){
+ var each = new box(thirteenthlevel[n],x_placing*x_placing_count,100+25*n*3);
+ each.render();
+}
+x_placing_count++;
+
+var fourteenthlevel = [];
+fourteenthlevel[0] = {"tech_ja":"リサイクル","tech_en":"recycling","require":["democracy","massproduction"],"mystery":[],"building":["リサイクル施設"],"unit":[],"description":""};
+fourteenthlevel[1] = {"tech_ja":"コンピューター","tech_en":"computers","require":["massproduction","miniaturization"],"mystery":["SETI計画"],"building":["研究所"],"unit":[],"description":""};
+fourteenthlevel[2] = {"tech_ja":"労働組合","tech_en":"laborunion","require":["guerillawarfare","massproduction"],"mystery":[],"building":[],"unit":["機械化歩兵"],"description":""};
+fourteenthlevel[3] = {"tech_ja":"核分裂","tech_en":"nuclearfission","require":["massproduction","atomictheory"],"mystery":["マンハッタン計画"],"building":[],"unit":[],"description":""};
+fourteenthlevel[4] = {"tech_ja":"上流飛行術","tech_en":"advancedflight","require":["machinetools","radio"],"mystery":[],"building":[],"unit":["爆撃機","早期警戒管制機","空母"],"description":""};
+
+for(var n=0;n<fourteenthlevel.length;n++){
+ var each = new box(fourteenthlevel[n],x_placing*x_placing_count,80+18*n*3);
+ each.render();
+}
+x_placing_count++;
+
+var fifteenthlevel = [];
+fifteenthlevel[0] = {"tech_ja":"ロケット工学","tech_en":"rocketry","require":["electronics","advancedflight"],"mystery":[],"building":["対空ミサイル陣地"],"unit":["巡航ミサイル","核兵器","イージス巡洋艦"],"description":""};
+fifteenthlevel[1] = {"tech_ja":"原子力","tech_en":"nuclearpower","require":["electronics","nuclearfission"],"mystery":[],"building":["原子力発電所"],"unit":[],"description":""};
+fifteenthlevel[2] = {"tech_ja":"ロボット工学","tech_en":"robotics","require":["mobilewarfare","computers"],"mystery":[],"building":["製造プラント"],"unit":["榴弾砲"],"description":""};
+fifteenthlevel[3] = {"tech_ja":"陸海空共同軍","tech_en":"combinedarms","require":["mobilewarfare","advancedflight"],"mystery":[],"building":[],"unit":["ヘリコプター","空挺部隊"],"description":""};
+
+for(var n=0;n<fifteenthlevel.length;n++){
+ var each = new box(fifteenthlevel[n],x_placing*x_placing_count,80+18*n*4);
+ each.render();
+}
+x_placing_count++;
+
+var sixteenthlevel = [];
+sixteenthlevel[0] = {"tech_ja":"宇宙飛行","tech_en":"spaceflight","require":["computers","rocketry"],"mystery":["アポロ計画"],"building":["宇宙船構造物"],"unit":[],"description":""};
+sixteenthlevel[1] = {"tech_ja":"レーザー工学","tech_en":"laser","require":["nuclearpower","massproduction"],"mystery":[],"building":["SDI防衛システム"],"unit":[],"description":""};
+
+for(var n=0;n<sixteenthlevel.length;n++){
+ var each = new box(sixteenthlevel[n],x_placing*x_placing_count,100+32*n*5);
+ each.render();
+}
+x_placing_count++;
+
+var seventeenthlevel = [];
+seventeenthlevel[0] = {"tech_ja":"環境学","tech_en":"environmentalism","require":["recycling","spaceflight"],"mystery":[],"building":["太陽光発電所"],"unit":[],"description":""};
+seventeenthlevel[1] = {"tech_ja":"プラスチック","tech_en":"plastics","require":["spaceflight","refining"],"mystery":[],"building":["宇宙コンポーネント"],"unit":[],"description":""};
+seventeenthlevel[2] = {"tech_ja":"超伝導","tech_en":"superconductors","require":["laser","nuclearpower"],"mystery":[],"building":["宇宙モジュール"],"unit":[],"description":""};
+
+for(var n=0;n<seventeenthlevel.length;n++){
+ var each = new box(seventeenthlevel[n],x_placing*x_placing_count,80+25*n*4);
+ each.render();
+}
+x_placing_count++;
+
+var eighteenthlevel = [];
+eighteenthlevel[0] = {"tech_ja":"核融合","tech_en":"fusionpower","require":["superconductors","nuclearpower"],"mystery":[],"building":[],"unit":[],"description":""};
+eighteenthlevel[1] = {"tech_ja":"ステルス","tech_en":"stealth","require":["advancedflight","superconductors"],"mystery":[],"building":[],"unit":["ステルス戦闘機","ステルス爆撃機"],"description":""};
+
+for(var n=0;n<eighteenthlevel.length;n++){
+ var each = new box(eighteenthlevel[n],x_placing*x_placing_count,100+32*n*5);
+ each.render();
+}
+x_placing_count++;
 
 </script>
 <div>不思議：<input type id='mystery' size='25'>｜
