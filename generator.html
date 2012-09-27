@@ -35,7 +35,6 @@ document.getElementById('result').value = JSON.stringify(result);
 function decode(){
 var rawdata = document.getElementById('result').value;
 rawdata.match(/.* = (.*);/);
-//console.log(RegExp.$1);
 var obj = JSON.parse(RegExp.$1);
 document.getElementById('tech_ja').value = obj['tech_ja'];
 document.getElementById('tech_en').value = obj['tech_en'];
