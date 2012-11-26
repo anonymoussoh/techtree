@@ -2,6 +2,7 @@
 <html lang="ja">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Style-Type" content="text/css" />
 <meta http-equiv="Content-Script-Type" content="text/javascript" />
 <script src="raphael-min.js" type="text/javascript" charset="utf-8"></script> 
 
@@ -62,7 +63,6 @@ box.prototype.render = function(){
        
         for(var p=0;p<require.length;p++){
         var require_elem = paper.getById(require[p]);
-//        console.log(require_elem.getBBox());
         var startx = require_elem.data("startx");
         var starty = require_elem.data("starty");
         var line = paper.path("M"+startx+","+starty+"L"+this.x+","+(this.height/2+this.y));
@@ -94,10 +94,11 @@ box.prototype.render = function(){
         function hoge(require,target){
         var ancestor = [];
          for(var i=0;i<require.length;i++){
+　        //研究ステップのダブり排除
           if(steps.indexOf(require[i])===-1){
           steps.push(require[i]);
           }
-         
+          //ベースとなる研究と自身を結ぶ線のハイライト切り替え
          var upper_elem = paper.getById(require[i]);
          upper_elem.attr(fill);
           var connection_line = paper.getById(target+"-"+require[i]);
@@ -107,7 +108,7 @@ box.prototype.render = function(){
            }else{
            connection_line.toFront();
            }
-         
+         //関数を再帰させる
          ancestor = upper_elem.data("require");
          hoge(ancestor,require[i]);
          }
@@ -121,7 +122,7 @@ box.prototype.render = function(){
        document.getElementById("unit").value = "";
        document.getElementById("mystery").value = "";
        }else{
-       document.getElementById("steps").value = steps.length;
+       document.getElementById("steps").value = steps.length + 1;
        document.getElementById("building").value = building;
        document.getElementById("description").value = description;
        document.getElementById("unit").value = unit;
@@ -259,14 +260,14 @@ level[17][0] = {"tech_ja":"核融合","tech_en":"fusionpower","require":["superc
 level[17][1] = {"tech_ja":"ステルス","tech_en":"stealth","require":["advancedflight","superconductors"],"mystery":[],"building":[],"unit":["ステルス戦闘機","ステルス爆撃機"],"description":""};
 
 var x_interval = 200;
-for(var current_level = 0; current_level < level.length; current_level++){
+ for(var current_level = 0; current_level < level.length; current_level++){
  var tech_per_level = level[current_level].length;
  var y_interval = (360 - tech_per_level * 20) / (tech_per_level + 1);
- for(var current_tech = 0; current_tech < tech_per_level; current_tech++){
- var each = new box(level[current_level][current_tech], 10 + x_interval * current_level , y_interval * (current_tech + 1) + 20 * current_tech);
+  for(var current_tech = 0; current_tech < tech_per_level; current_tech++){
+  var each = new box(level[current_level][current_tech], 10 + x_interval * current_level , y_interval * (current_tech + 1) + 20 * current_tech);
   each.render();
+  }
  }
-}
 </script>
 <div>不思議：<input type id='mystery' size='28'>｜
 解禁ユニット：<input type='text' id='unit' size='28'>｜
